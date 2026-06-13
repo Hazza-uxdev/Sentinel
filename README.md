@@ -45,7 +45,7 @@ Your findings stay on your device.
 1. Clone the repository
 
    ```powershell
-   git clone https://github.com/your-username/sentinel.git
+   git clone https://github.com/hazza-uxdev/sentinel.git
    cd sentinel
    ```
 
