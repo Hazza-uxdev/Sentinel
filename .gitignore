@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+Reports/*
+!Reports/.gitkeep
+YaraRules/*
+!YaraRules/.gitkeep
+*.user
+*.suo
+*.log

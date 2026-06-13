@@ -1,241 +1,299 @@
-# 🛡️ Sentinel
+# Sentinel
 
-Sentinel is a modern, local-first Windows security investigation tool built for everyday users, power users, and cybersecurity learners.
+Sentinel is a modern, local-first Windows security triage tool built with WPF (.NET).
+It helps users inspect suspicious downloads, review static file indicators, and spot common LOLBin command-line abuse.
 
-It helps identify suspicious downloads, inspect Windows executables, and detect potentially malicious use of built-in Windows tools — all without sending your data anywhere.
+Sentinel is not an antivirus.
 
-Your files stay on your device.
+It never executes suspicious files, never deletes files, never modifies system files, and never terminates processes automatically.
 
----
-
-## ✨ Features
-
-* Download monitoring and inspection
-* Real-time suspicious file detection
-* Windows executable (PE) analysis
-* EXE, DLL, and driver inspection
-* File hashing (MD5, SHA1, SHA256)
-* YARA rule support
-* PE section and entropy analysis
-* Suspicious API import detection
-* LOLBin abuse detection
-* PowerShell activity inspection
-* Risk scoring and severity ratings
-* Plain-English security explanations
-* Historical scan reporting
-* Local SQLite scan database
-* JSON, CSV, and HTML report exports
-* Light and dark theme support
+Your findings stay on your device.
 
 ---
 
-## 🖥️ System Requirements
+## Features
 
-* Windows 10 or Windows 11
-* Python 3.11 or newer
-* Visual Studio Code (optional)
+- Modern Windows desktop UI inspired by Bastion
+- Dashboard with security status and local triage statistics
+- Download Inspector for recently downloaded files
+- Background Downloads monitoring with tray support
+- Windows toast-style tray alerts for suspicious downloads
+- Local risk scoring with plain-English explanations
+- Safe overrides for trusted downloads, analyzed files, and activity alerts
+- File Analyzer for hashes, file type risk, and static metadata
+- Activity Monitor for suspicious LOLBin command lines
+- Encoded PowerShell command extraction and copy support
+- Themed right-click menus for app actions
+- Local YARA rules folder for adding detection files
+- JSON and HTML report export
+- Local JSON-backed settings and history storage
 
 ---
 
-## 📦 Installation
+## System Requirements
+
+- Windows 10 or Windows 11
+- .NET 8.0 SDK or newer
+- Visual Studio 2022 or the .NET CLI
+
+---
+
+## Installation
 
 ### Option 1: Run from Source
 
 1. Clone the repository
 
-   git clone https://github.com/Hazza-uxdev/sentinel.git
-
+   ```powershell
+   git clone https://github.com/your-username/sentinel.git
    cd sentinel
+   ```
 
-2. Create a virtual environment
+2. Restore dependencies
 
-   python -m venv .venv
+   ```powershell
+   dotnet restore Sentinel.csproj
+   ```
 
-3. Activate the environment
+3. Run the app
 
-   .venv\Scripts\activate
-
-4. Install dependencies
-
-   pip install -r requirements.txt
-
-5. Run Sentinel
-
-   python main.py
+   ```powershell
+   dotnet run --project Sentinel.csproj
+   ```
 
 ---
 
 ### Option 2: Build a Standalone Executable
 
-1. Install PyInstaller
+1. Open the project in Visual Studio 2022
 
-   pip install pyinstaller
+2. Set build configuration
 
-2. Build the application
+   ```text
+   Release | x64
+   ```
 
-   pyinstaller main.py --onefile --windowed
+3. Build the project
 
-3. Locate the executable
+   ```powershell
+   dotnet publish Sentinel.csproj -c Release -r win-x64 --self-contained false
+   ```
 
-   dist/
+4. Locate the output
 
-4. Run
+   ```text
+   bin/Release/net8.0-windows/win-x64/publish/
+   ```
 
+5. Run
+
+   ```text
    Sentinel.exe
+   ```
 
 ---
 
-## 🚀 First Launch
+## First Launch
 
-* Choose your preferred theme
-* Configure your Downloads folder location (optional)
-* Import YARA rules (optional)
-* Enable automatic monitoring
-
-Sentinel will begin monitoring suspicious downloads and activity immediately.
-
----
-
-## 📁 Data Storage
-
-All data is stored locally on your device.
-
-Application data is stored at:
-
-%APPDATA%/Sentinel/
-
-This may include:
-
-* Scan history database
-* Generated reports
-* User preferences
-* Imported YARA rules
-* Application logs
-
-No data is uploaded or synchronized externally.
+- Sentinel opens to the dashboard.
+- The Downloads folder path is read from your Windows profile.
+- Background monitoring can be enabled from Settings.
+- Closing the window hides Sentinel to the tray so monitoring can continue.
+- Use Quit Sentinel to fully exit the app.
 
 ---
 
-## 🛡️ Security
-
-* Local-first design
-* No cloud services
-* No telemetry
-* No file uploads
-* Offline malware triage
-* Static analysis only
-* Never executes analyzed files
-* User-controlled YARA rules
-* Fully local report generation
-
-Sentinel is designed to help investigate suspicious activity without introducing additional risk.
-
----
-
-## 🔍 Threat Analysis
+## Core Modules
 
 ### Download Inspector
 
-Monitors downloaded files and flags:
+Sentinel watches your Downloads folder and inspects new or existing files.
 
-* Executables
-* Scripts
-* Double extensions
-* Suspicious filenames
-* Potential malware indicators
+It checks for:
 
-Examples:
+- Executable file types
+- Script files
+- Archives
+- Double extensions
+- Very long filenames
+- Random-looking filenames
+- Suspicious archive names
 
-* invoice.pdf.exe
-* photo.jpg.scr
-* document.docx.js
+Files can be marked safe from the right-click menu. Safe files are ignored in future scoring.
 
----
+### File Analyzer
 
-### PE File Analyzer
+Sentinel can manually inspect a selected file without running it.
 
-Analyze Windows executables without running them.
+It displays:
 
-Displays:
-
-* File metadata
-* PE structure
-* Section entropy
-* Imported APIs
-* Exported functions
-* Digital signature status
-* Hash information
-* YARA matches
-
----
+- File name and path
+- File size
+- MD5, SHA1, and SHA256 hashes
+- Category
+- Risk score
+- Plain-English explanation
 
 ### Activity Monitor
 
-Detects potentially suspicious use of built-in Windows tools.
+Sentinel scans running processes for known LOLBins and suspicious command-line patterns.
 
-Examples:
+Examples include:
 
-* powershell.exe
-* certutil.exe
-* rundll32.exe
-* regsvr32.exe
-* mshta.exe
-* wscript.exe
-* cscript.exe
+- powershell.exe
+- pwsh.exe
+- cmd.exe
+- certutil.exe
+- bitsadmin.exe
+- mshta.exe
+- regsvr32.exe
+- rundll32.exe
+- wscript.exe
+- cscript.exe
+- wmic.exe
+- msiexec.exe
 
-Sentinel explains findings in plain English and provides risk context rather than simply generating alerts.
-
----
-
-## 🧩 YARA Support
-
-Sentinel supports custom YARA rules.
-
-Add rules to:
-
-data/yara_rules/
-
-Or import them directly through the application.
-
-Loaded rules can be used during file analysis and download inspection.
+Encoded PowerShell commands can be copied for investigation. Activity alerts can also be marked safe.
 
 ---
 
-## 🧩 Tech Stack
+## Data Storage
 
-* Python 3.11+
-* CustomTkinter
-* psutil
-* pefile
-* watchdog
-* yara-python
-* SQLite
-* JSON reporting
+Sentinel stores settings and findings locally on your PC.
+
+Main local data folder:
+
+```text
+%LOCALAPPDATA%/Sentinel/
+```
+
+This may include:
+
+- App settings
+- Download findings
+- Activity alerts
+- Safe overrides
+- Local report history
+
+Reports are exported to:
+
+```text
+Reports/
+```
+
+YARA rules can be added to:
+
+```text
+YaraRules/
+You can also find pre-found yara rules for a RAT from the following website: https://trojandb.org/browse
+```
 
 ---
 
-## 🛠 Roadmap
+## Risk Scoring
 
-* Digital signature verification improvements
-* VirusTotal integration (optional)
-* Scheduled scan profiles
-* Expanded LOLBin detection rules
-* Enhanced YARA management
-* Threat intelligence enrichment
-* Portable mode
-* Plugin support
-* Additional forensic reporting
+Sentinel uses a local scoring model from 0 to 100.
+
+```text
+0-20    Safe
+21-40   Low
+41-60   Medium
+61-80   High
+81-100  Critical
+```
+
+Example score increases:
+
+- Downloaded executable: +15
+- Script file: +20
+- Double extension: +30
+- Random-looking filename: +10
+- Suspicious archive name: +10
+
+Scores are explanations, not verdicts. A high score means the item deserves attention, not that it is confirmed malware.
 
 ---
 
-## 📄 License
+## Privacy
+
+- No cloud scanning
+- No telemetry
+- No account required
+- No uploaded files
+- No remote API dependency
+- Findings remain local unless you export a report yourself
+
+---
+
+## Security Disclaimer
+
+Sentinel is a defensive investigation tool.
+
+It is designed to help users understand suspicious local activity, but it does not replace antivirus software, EDR, backups, patching, or professional incident response.
+
+Sentinel does not:
+
+- Execute suspicious files
+- Quarantine files
+- Delete files
+- Modify system files
+- Terminate processes automatically
+- Guarantee that a file is safe or malicious
+
+---
+
+## Tech Stack
+
+- C# (.NET 8)
+- WPF (XAML)
+- System.Management for process command-line inspection
+- System.Windows.Forms NotifyIcon for tray support
+- Local JSON storage
+- SHA256, SHA1, and MD5 hashing
+
+---
+
+## Project Structure
+
+```text
+Sentinel/
+  Assets/
+  Data/
+  Models/
+  Services/
+  Reports/
+  YaraRules/
+  App.xaml
+  App.xaml.cs
+  GlobalUsings.cs
+  MainWindow.xaml
+  MainWindow.xaml.cs
+  Sentinel.csproj
+  README.md
+```
+
+---
+
+## Roadmap
+
+- Full PE metadata parser
+- Digital signature verification
+- Native Windows toast notifications
+- More LOLBin rules loaded from JSON
+- YARA rule execution against selected files
+- CSV report export
+- Installer packaging
+- More dashboard filtering and sorting
+- Light theme support
+
+---
+
+## License
 
 MIT License
 
 ---
 
-## ❤️ Credits
+## Credits
 
-Myself of course,
-
-Built for local-first security, transparency, and learning.
+Built as a local-first Windows security triage app with safety, clarity, and privacy in mind.
