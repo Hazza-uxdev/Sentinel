@@ -17,6 +17,9 @@ Your findings stay on your device.
 - Dashboard with security status and local triage statistics
 - Download Inspector for recently downloaded files
 - Background Downloads monitoring with tray support
+- Optional Windows startup launch
+- Startup mode selection: full window or hidden in tray
+- Optional close-to-tray behavior
 - Windows toast-style tray alerts for suspicious downloads
 - Local risk scoring with plain-English explanations
 - Safe overrides for trusted downloads, analyzed files, and activity alerts
@@ -93,13 +96,61 @@ Your findings stay on your device.
 
 ---
 
+### Option 3: Build the Windows Installer
+
+Sentinel includes an Inno Setup installer script.
+
+1. Install Inno Setup 6
+
+   ```text
+   https://jrsoftware.org/isinfo.php
+   ```
+
+2. Run the installer build script
+
+   ```powershell
+   cd Installer
+   .\build-installer.ps1
+   ```
+
+3. Locate the installer
+
+   ```text
+   Installer/Output/SentinelSetup.exe
+   ```
+
+The script publishes a self-contained Windows x64 build before creating the installer.
+
+---
+
 ## First Launch
 
 - Sentinel opens to the dashboard.
 - The Downloads folder path is read from your Windows profile.
 - Background monitoring can be enabled from Settings.
-- Closing the window hides Sentinel to the tray so monitoring can continue.
+- Sentinel can start automatically when Windows starts.
+- Startup can open the full window or hide directly to the tray.
+- Closing the window can hide Sentinel to the tray so monitoring can continue.
 - Use Quit Sentinel to fully exit the app.
+
+---
+
+## Startup and Tray Behavior
+
+Settings includes:
+
+- Start monitoring automatically
+- Close button hides Sentinel to the tray
+- Start Sentinel when Windows starts
+- Open to tray on startup instead of showing the window
+
+Windows startup is registered under the current user's Run key:
+
+```text
+HKCU/Software/Microsoft/Windows/CurrentVersion/Run
+```
+
+This does not require administrator access.
 
 ---
 
@@ -185,7 +236,6 @@ YARA rules can be added to:
 
 ```text
 YaraRules/
-You can also find pre-found yara rules for a RAT from the following website: https://trojandb.org/browse
 ```
 
 ---
@@ -263,6 +313,7 @@ Sentinel/
   Services/
   Reports/
   YaraRules/
+  Installer/
   App.xaml
   App.xaml.cs
   GlobalUsings.cs
@@ -282,7 +333,7 @@ Sentinel/
 - More LOLBin rules loaded from JSON
 - YARA rule execution against selected files
 - CSV report export
-- Installer packaging
+- MSI packaging option
 - More dashboard filtering and sorting
 - Light theme support
 

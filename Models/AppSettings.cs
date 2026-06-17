@@ -9,4 +9,10 @@ public sealed class AppSettings
     public string YaraRulesPath { get; set; } = Path.Combine(AppContext.BaseDirectory, "YaraRules");
 
     public bool AutoMonitor { get; set; } = true;
+
+    public bool CloseToTrayOnClose { get; set; } = true;
+
+    public bool OpenOnStartup { get; set; } = true;
+
+    public bool OpenToTrayOnStartup { get; set; } = true;
 }

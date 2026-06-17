@@ -415,9 +415,33 @@
                                 </StackPanel>
                             </Border>
                             <Border CornerRadius="8" Background="#171B23" BorderBrush="#2A3342" BorderThickness="1"
+                                    Padding="16,14" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <CheckBox x:Name="AutoMonitorCheck" Content="Start monitoring automatically"
+                                              VerticalAlignment="Center"/>
+                                    <TextBlock Text="Keeps the Downloads monitor running while Sentinel is open or hidden in the tray."
+                                               Foreground="#777777" FontSize="12" TextWrapping="Wrap" Margin="28,6,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border CornerRadius="8" Background="#171B23" BorderBrush="#2A3342" BorderThickness="1"
+                                    Padding="16,14" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <CheckBox x:Name="CloseToTrayCheck" Content="Close button hides Sentinel to the tray"
+                                              VerticalAlignment="Center"/>
+                                    <TextBlock Text="When disabled, the X button exits the app instead of leaving the monitor running."
+                                               Foreground="#777777" FontSize="12" TextWrapping="Wrap" Margin="28,6,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border CornerRadius="8" Background="#171B23" BorderBrush="#2A3342" BorderThickness="1"
                                     Padding="16,14" Margin="0,0,0,20">
-                                <CheckBox x:Name="AutoMonitorCheck" Content="Start monitoring automatically and stay in tray"
-                                          VerticalAlignment="Center"/>
+                                <StackPanel>
+                                    <CheckBox x:Name="OpenOnStartupCheck" Content="Start Sentinel when Windows starts"
+                                              VerticalAlignment="Center"/>
+                                    <CheckBox x:Name="OpenToTrayStartupCheck" Content="Open to tray on startup instead of showing the window"
+                                              VerticalAlignment="Center" Margin="0,10,0,0"/>
+                                    <TextBlock Text="Turn off the tray option if you want the full Sentinel window to open after signing in."
+                                               Foreground="#777777" FontSize="12" TextWrapping="Wrap" Margin="28,6,0,0"/>
+                                </StackPanel>
                             </Border>
                             <Button Content="Save Settings" Style="{StaticResource ToolbarBtn}" Width="120" HorizontalAlignment="Left" Click="SaveSettings_Click"/>
                         </StackPanel>

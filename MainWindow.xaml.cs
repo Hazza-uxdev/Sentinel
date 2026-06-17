@@ -16,6 +16,7 @@ namespace Sentinel;
 public partial class MainWindow : Window
 {
     private readonly SettingsService _settingsService = new();
+    private readonly StartupService _startupService = new();
     private readonly SentinelRepository _repository = new();
     private readonly FileAnalyzer _fileAnalyzer = new();
     private readonly LolbinDetector _lolbinDetector = new();
@@ -51,6 +52,10 @@ public partial class MainWindow : Window
         DownloadsPathText.Text = _settings.DownloadsPath;
         YaraPathText.Text = _settings.YaraRulesPath;
         AutoMonitorCheck.IsChecked = _settings.AutoMonitor;
+        CloseToTrayCheck.IsChecked = _settings.CloseToTrayOnClose;
+        OpenOnStartupCheck.IsChecked = _settings.OpenOnStartup;
+        OpenToTrayStartupCheck.IsChecked = _settings.OpenToTrayOnStartup;
+        ApplyStartupSetting(showErrors: false);
 
         UpdateGreeting();
         RefreshAll();
@@ -208,7 +213,13 @@ public partial class MainWindow : Window
 
     private void Minimize_Click(object sender, RoutedEventArgs e) => HideToTray();
     private void Maximize_Click(object sender, RoutedEventArgs e) => ToggleMaximize();
-    private void CloseToTray_Click(object sender, RoutedEventArgs e) => HideToTray();
+    private void CloseToTray_Click(object sender, RoutedEventArgs e)
+    {
+        if (_settings.CloseToTrayOnClose)
+            HideToTray();
+        else
+            Quit();
+    }
 
     private void ToggleMaximize() =>
         WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
@@ -224,6 +235,15 @@ public partial class MainWindow : Window
         Hide();
         if (!_downloadMonitor.IsRunning && _settings.AutoMonitor)
             StartMonitor();
+    }
+
+    public void StartHiddenInTray()
+    {
+        ShowInTaskbar = false;
+        Hide();
+        if (!_downloadMonitor.IsRunning && _settings.AutoMonitor)
+            StartMonitor();
+        SetActionStatus("Started in tray.");
     }
 
     private void ShowFromTray()
@@ -245,7 +265,7 @@ public partial class MainWindow : Window
 
     protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
     {
-        if (!_isQuitting)
+        if (!_isQuitting && _settings.CloseToTrayOnClose)
         {
             e.Cancel = true;
             HideToTray();
@@ -462,7 +482,11 @@ public partial class MainWindow : Window
         _settings.DownloadsPath = DownloadsPathText.Text;
         _settings.YaraRulesPath = YaraPathText.Text;
         _settings.AutoMonitor = AutoMonitorCheck.IsChecked == true;
+        _settings.CloseToTrayOnClose = CloseToTrayCheck.IsChecked == true;
+        _settings.OpenOnStartup = OpenOnStartupCheck.IsChecked == true;
+        _settings.OpenToTrayOnStartup = OpenToTrayStartupCheck.IsChecked == true;
         _settingsService.Save(_settings);
+        ApplyStartupSetting(showErrors: true);
         if (_settings.AutoMonitor)
             StartMonitor();
         else
@@ -471,6 +495,20 @@ public partial class MainWindow : Window
         UpdateMonitorButton();
         SetActionStatus("Settings saved.");
         return Task.CompletedTask;
+    }
+
+    private void ApplyStartupSetting(bool showErrors)
+    {
+        try
+        {
+            _startupService.Apply(_settings);
+        }
+        catch (Exception ex)
+        {
+            SetActionStatus("Unable to update Windows startup setting: " + ex.Message, true);
+            if (showErrors)
+                System.Windows.MessageBox.Show(ex.Message, "Sentinel startup setting error", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
     }
 
     private async Task RunButtonBusyAsync(WpfButton button, string label, Func<Task> action)

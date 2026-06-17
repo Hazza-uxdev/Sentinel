@@ -16,6 +16,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ApplicationDefinition Remove="GitHubSource\App.xaml" />
+    <Compile Remove="GitHubSource\**\*.cs" />
+    <Page Remove="GitHubSource\**\*.xaml" />
+    <Resource Remove="GitHubSource\**\*" />
+    <Content Remove="GitHubSource\**\*" />
+    <None Remove="GitHubSource\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Management" Version="8.0.0" />
   </ItemGroup>
 </Project>
